@@ -5,6 +5,7 @@ import { passportCall } from "../middlewares/passportCall.middleware.js";
 import { validateSchema } from "../middlewares/validateSchema.middleware.js";
 import { loginSchema } from "../schemas/login.schema.js";
 import { registerSchema } from "../schemas/register.schema.js";
+import { UserResponseDto } from "../dto/userResponse.dto.js";
 
 const router = Router();
 
@@ -35,7 +36,8 @@ router.post("/register", validateSchema(registerSchema), passportCall("register"
 
 router.get("/profile", passportCall("jwt"), authRole(["admin", "user"]), async (req, res) => {
   try {
-    res.status(200).json({ user: req.user });
+    const userDto = new UserResponseDto(req.user);
+    res.status(200).json({ user: userDto });
   } catch (error) {
     res.status(500).json({ status: "error", message: "Internal Server Error" });
   }
